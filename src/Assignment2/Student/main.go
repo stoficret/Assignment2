@@ -154,21 +154,26 @@ func student(w http.ResponseWriter, r *http.Request) {
 
 	}
 	if r.Method == "GET" {
+		StudentID := r.URL.Query().Get("StudentID")
+		fmt.Println("StudentID: ", StudentID)
+		students := ListStudents(db)
 
-		if _, ok := students[params["StudentID"]]; ok {
-			json.NewEncoder(w).Encode(
-				students[params["StudentID"]])
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("404 - No student found"))
-		}
-
+		json.NewEncoder(w).Encode(&students)
 	}
 	//---Deny any deletion of student's account or other student's information
 	if r.Method == "DELETE" {
-		w.WriteHeader(http.StatusAccepted)
-		w.Write([]byte("403 - For audit purposes, student's account cannot be deleted."))
-	}
+		StudentID := r.URL.Query().Get("StudentID")
+		fmt.Println("StudentID: ", StudentID)
+		students, errMsg := DeleteStudent(db, StudentID)
+
+		if errMsg == "Student ID not found." {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("404 - Student's account not found"))
+		} else {
+			fmt.Println(students)
+			w.WriteHeader(http.StatusAccepted)
+			w.Write([]byte("202 - Student's account deleted"))
+		}
 }
 
 func liststudent(w http.ResponseWriter, r *http.Request) {
