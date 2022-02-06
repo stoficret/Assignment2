@@ -176,17 +176,8 @@ func student(w http.ResponseWriter, r *http.Request) {
 		}
 }
 
-func liststudent(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		if _, ok := students[params["StudentID"]]; ok {
-			json.NewEncoder(w).Encode(
-				students[params["StudentID"]])
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("404 - No student found"))
-		}
-	}
-}
+     }
+   }
 
 func searchstudents(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
